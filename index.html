@@ -7,51 +7,68 @@
     <script src="mainController.js"></script>
     <script src="mainService.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 
 </head>
 <body ng-controller="mainController">
 
     <h1>Adobe API Request Top URLs</h1>
-    <form id="api-call-form">
-        <table>
+      <container class="mainContainer">
+        <div class="firstBox">
+          <h2>Pull Adobe Report</h2>
+            <button type="button" ng-click="reset()">Reset</button>
+            <button type="button" ng-click="getUrlReport()" ng-if="reportObject">Get Report</button><br />
 
-          User Name: <input type="text" ng-model="inputUsername" /><br />
-          Secret: <input type="text" ng-model="inputSecret" /><br />
+            User Name: <input type="text" ng-model="inputUsername" />
+            Secret: <input type="text" ng-model="inputSecret" />
 
             <label> Endpoint City:
                 <select ng-model="city" ng-options="endpoint.name for endpoint in endpoints" ng-change="sendEndpoint(); getReports();">
-                   <option value="endpoint.value">-- choose city --</option>
+                   <option value="endpoint.value"></option>
                 </select>
             </label>
 
-              <tr><td><label for="reportSuites"> Report Suite:
-                <select ng-model="reportSuites" ng-options="item.rsid as item.site_title for item in urls.report_suites" ng-change="getMetrics()">
+            <label ng-show="urls.report_suites"> Report Suite:
+                <select ng-model="reportSuites" ng-options="item.rsid as item.site_title for item in urls.report_suites" ng-change="getMetrics()" >
                 </select>
-              </label></tr></td>
+            </label>
 
-              <tr><td><label for="selectMetrics"> Metrics:
-                <select ng-model="selectMetrics" ng-options="item.id as item.name for item in metrics" ng-change="getElements()">
+            <label ng-show="metrics"> Metrics:
+                <select ng-model="selectMetrics" ng-options="item.id as item.name for item in metrics" ng-change="getElements()" >
                 </select>
-              </label></tr></td>
+            </label>
 
-              <tr><td>Number of Pages: <input type="text" ng-model="selectNumber" /></tr></td><br />
+            <label ng-show="elements">Number of Pages: <input type="text" ng-model="selectNumber" </label>
 
-            <tr><td><label for="selectElements"> Elements:
-              <select ng-model="selectElements" ng-options="item.id as item.name for item in elements" ng-change="getReportID()">
-              </select>
-            </label></tr></td>
-        </table>
-      </form>
-      <input  type="submit" ng-click="getUrlReport()" ng-if="reportObject" />
-      <table>
-    <tr>
-        <th>Urls</th>
-    </tr>
-    <tr><td><label>
-      <div ng-model="finalReport" ng-repeat="item in urlReport.report.data">
-        {{item.name}}
-      </div>
-    </label></tr></td>
-</table>
+            <label ng-show="elements"> Elements:
+                <select ng-model="selectElements" ng-options="item.id as item.name for item in elements" ng-change="getReportID()" >
+                </select>
+            </label>
+        </div>
+        <div class="spinner" ng-show="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+
+        <div class="secondBox">
+          <h2 ng-show="urlReport">Urls</h2>
+            <div ng-model="finalReport" ng-repeat="item in urlReport.report.data">
+              {{item.name}}
+            </div>
+        </div>
+        <div class="thirdBox" ng-show="urlReport">
+          <h2>Post to ObservePoint</h2>
+            <button type="button" ng-click="sendToOp()" ng-if="urlReport">Send to OP</button><br />
+            <br />
+            Name: <input type="text" ng-model="auditName" />
+            Property ID: <input type="text" ng-model="propId" />
+            Limit: <input type="text" ng-model="limit" />
+            Next Run: <input type="text" ng-model="nextRun" />
+            Recipients: <input type="text" ng-model="recipients" />
+        </div>
+      </container>
 </body>
 </html>

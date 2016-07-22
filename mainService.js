@@ -1,5 +1,5 @@
 angular.module('app')
-.service('mainService', function($q) {
+.service('mainService', function($q, $http) {
     var wsse = new Wsse()
 
   this.GetReportSuites = function(username,secret,method,params,endpoint) {
@@ -18,6 +18,7 @@ angular.module('app')
               if(status!=="success"){
                 console.log(obj);
                 defer.reject(obj);
+                alert("error");
               }else{
                 defer.resolve(obj.responseText);
                 console.log(obj);
@@ -32,4 +33,21 @@ angular.module('app')
         return defer.promise;
 
   }
+
+  this.SendReportUrls = function(data) {
+      var config = {
+      'X-ObservePoint-Key': '63b3625bf43bfd9126ce095c1d4686699a59f54b', 'Authorization': 'Basic'}
+
+      var newObject = {
+          requestUrl: "https://my.observepoint.com/api/audits",
+          requestType: "POST",
+          requestJson: JSON.stringify(data),
+          requestKey: "63b3625bf43bfd9126ce095c1d4686699a59f54b"
+      }
+      return $http.post('http://localhost:8080', newObject)
+      .then(function(response){
+        return response;
+      });
+  }
+
 })
